@@ -164,6 +164,7 @@
                         <groupId>com.github.goldin</groupId>
                         <artifactId>copy-maven-plugin</artifactId>
                         <version>0.2.5</version>
+                          <executions>
                             <execution>
                                 <id>deploy-to-local-directory</id>
                                 <phase>install</phase>
