@@ -12,6 +12,7 @@
         <pluginVersion>${project.version}</pluginVersion>
         <gsVersion>${project.version}</gsVersion>
         <springVersion>4.1.1.RELEASE</springVersion>
+        <toolsDir>../xap/tools</toolsDir>
     </properties>
     <repositories>
         <repository>
@@ -151,4 +152,43 @@
 
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>build</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.goldin</groupId>
+                        <artifactId>copy-maven-plugin</artifactId>
+                        <version>0.2.5</version>
+                            <execution>
+                                <id>deploy-to-local-directory</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <skipIdentical>false</skipIdentical>
+                                    <failIfNotFound>true</failIfNotFound>
+                                    <resources>
+                                        <resource>
+                                            <description>Copy maven-xap-plugin.jar to tools/maven</description>
+                                            <targetPath>${toolsDir}/maven</targetPath>
+                                            <directory>${basedir}/target/</directory>
+                                            <includes>
+                                                <include>${project.artifactId}.jar</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
