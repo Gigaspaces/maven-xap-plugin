@@ -192,8 +192,8 @@
                                     <failIfNotFound>true</failIfNotFound>
                                     <resources>
                                         <resource>
-                                            <description>Copy maven-xap-plugin.jar to tools/maven</description>
-                                            <targetPath>${toolsDir}/maven</targetPath>
+                                            <description>Copy maven-xap-plugin.jar to tools/maven/lib</description>
+                                            <targetPath>${toolsDir}/maven/lib</targetPath>
                                             <directory>${basedir}/target/</directory>
                                             <includes>
                                                 <include>${project.artifactId}.jar</include>
