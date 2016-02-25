@@ -192,7 +192,7 @@
                                     <failIfNotFound>true</failIfNotFound>
                                     <resources>
                                         <resource>
-                                            <description>Copy maven-xap-plugin.jar to tools/maven/lib</description>
+                                            <description>Copy xap-maven-plugin.jar to tools/maven/lib</description>
                                             <targetPath>${toolsDir}/maven/lib</targetPath>
                                             <directory>${basedir}/target/</directory>
                                             <includes>

@@ -81,7 +81,7 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-openspaces-plugin</artifactId>
+                <artifactId>xap-maven-plugin</artifactId>
                 <version>${gsVersion}</version>
             </plugin>
         </plugins>
