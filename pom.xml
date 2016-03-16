@@ -12,7 +12,6 @@
         <pluginVersion>${project.version}</pluginVersion>
         <gsVersion>${project.version}</gsVersion>
         <springVersion>4.1.1.RELEASE</springVersion>
-        <toolsDir>../xap/tools</toolsDir>
     </properties>
     <repositories>
         <repository>
