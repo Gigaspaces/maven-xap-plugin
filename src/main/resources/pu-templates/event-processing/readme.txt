@@ -8,7 +8,7 @@ JVM: >= 5.
 GENERAL DESCRIPTION:
 --------------------
 
-  The project consists of four modules: common, processor, feeder and mirror. The common
+  The project consists of three modules: common, processor, and feeder. The common
 module includes all the shared resources and classes between both the processor
 and the feeder. In our case, the common module includes the "Data" class which
 is written and taken from the Space.
@@ -18,21 +18,12 @@ it starts a polling container that performs a take from the Space of unprocessed
 entries. The take operation results in an "event" that will end up executing the 
 "Processor" class. The Processor "processes" the Data object (by setting its processed
 flag to true) and returns it. The return value is automatically written back to the Space.
-  Any changes done on the processor Space are replicated in a reliable asynchronous manner to the 
-mirror processing unit which in turn persist the changes to the database. When the processor
-starts up, it loads all its relevant data from the database and initializes the Space with it.
+When the processor starts up, it loads all its relevant data from the database and initializes the Space with it.
   The processor also comes with both a unit test and integration test that verifies its behavior.
-
-  The mirror module is a very simple module which includes just a mirror Space. The mirror Space
-uses the Hibernate external data source in order to persist changes to the database using 
-Hibernate. The processor connects to the mirror in a reliable asynchronous manner and replicates
-changes done on its Space to the mirror.
 
   The feeder module, which is also a processing unit, connects to a Space remotely and
 writes unprocessed Data objects to the Space (resulting in events firing up within
 the processor processing unit).
-
-To view the HSQL database created by the mirror service invoke mvn os:hsql-ui.
 
 BUILDING, PACKAGING, RUNNING, DEPLOYING
 ---------------------------------------
@@ -46,7 +37,6 @@ Quick list:
 * mvn xap:run-standalone: Runs a packaged application (from the jars).
 * mvn xap:deploy: Deploys the project onto the Service Grid.
 * mvn xap:undeploy: Removes the project from the Service Grid.
-* mvn xap:hsql-ui: To view the HSQL database created by the mirror service
 * mvn xap:intellij:Adds run configurations for IntelliJ example project.
 
   In order to build the example, a simple "mvn compile" executed from the root of the 
@@ -54,12 +44,12 @@ project will compile all the different modules.
 
   Packaging the application can be done using "mvn package" (note, by default, it also
 runs the tests, in order to disable it, use -DskipTests). The packaging process jars up 
-the common module. The feeder, processor and mirror modules packaging process creates a 
+the common module. The feeder and processor modules packaging process creates a
 "processing unit structure" directory within the target directory called [app-name]-[module].
 It also creates a jar from the mentioned directory called [app-name]-[module].jar.
 
-  In order to simply run the mirror, processor and feeder (after compiling), "mvn xap:run" can be used.
-This will run a single instance of each of the mirror, processor and feeder modules within
+  In order to simply run the processor and feeder (after compiling), "mvn xap:run" can be used.
+This will run a single instance of each of the processor and feeder modules within
 the same JVM using the compilation level classpath (no need for packaging). 
 A specific module can also be executed by itself, which in this case, executing
 more than one instance of the processing unit can be done. For example, running the processor
@@ -94,7 +84,7 @@ maven repository (which resides under USER_HOME/.m2/repository).
 After generating the projects, configure them to work with maven:
 for each project, right click on it and select Configure > Convert to Maven Project.
 
-  The application itself comes with built in launch targets allowing to run the mirror, processor 
+  The application itself comes with built in launch targets allowing to run the processor
 and the feeder using Eclipse run (or debug) targets.
 
 WORKING WITH INTELLIJ
@@ -115,7 +105,6 @@ WORKING WITH INTELLIJ
 
   Execute the following command from the project root directory:
   mvn xap:intellij
-  select Run > Edit Configurations… Under Application click on Mirror and then press OK then click on Run > Run Mirror.
   select Run > Edit Configurations… Under Application click on Processor and then press OK then click on Run > Run Processor.
   Select Run > Edit Configurations… Under Application click on Feeder and then press OK then click on Run > Run Feeder.
 
@@ -137,33 +126,10 @@ will start processing all the relevant Data. Note, when deploying on top of the 
 Service Grid will also identify that one instance failed, and will automatically start it over in 
 another container (GSC).
 
-  The mirror provides a transparent persistency model which does not affect the latency of the main
-path of the application (writing and processing Data objects). The processor connects to the mirror 
-and replicates in a reliable asynchronous manner changes done on it to the mirror Space. The reliable aspects 
-is achieved thanks to the fact that the processor has a backup Space for each partition. When the 
-mirror fails, the processor Spaces will accumulate the relevant changes until the Service Grid will
-create a new instance of it. The changes will then be replicated to the mirror.
-  The mirror itself uses built in Hibernate external data source which uses Hibernate in order to
-persist all the relevant changes to the database.
-  When the processor starts up, each primary Space of each partition will load all the relevant data
-from the database using its their own configured Hibernate external data source.
-
   The feeder works with a clustered view of the Space (the 2,1 cluster topology looking as one), and 
 simply writes unprocessed Data objects to the Space. The routing (@SpaceRouting) controls to which
 partition the unprocessed Data will be written and consequently which instance will process it.
 
-A NOTE ON DATABASE
-------------------
-
-  The project uses HSQLDB in as a database in order to provide the best out of the box experience. The
-mirror starts an instance of HSQLDB and connects to it. The processor connects to the HSQLDB database
-as well. HSQLDB stores its data in under the USER_HOME directory.
-  In order to switch to another database, the bean that starts up HSQLDB should be removed. The JDBC
-data source connection string should point to the new Database in both the mirror and processor. And
-Hibernate should be configured with a different Database Dialect.
-  Note that the mirror and the processor are configured to use a database that runs on the localhost.
-In order to run the mirror and the processor on different machines change the url of the dataSource
-element in the pu.xml file of the processor to use host of the mirror.
 
 MAVEN PLUGIN WIKI PAGE
 ---------------------------------
