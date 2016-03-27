@@ -344,6 +344,7 @@ public class CreatePUProjectMojo extends AbstractOpenSpacesMojo {
     private String createAvailableTemplatesMessage() throws Exception{
         HashMap availableTemplates = getAvailableTemplates();
         StringBuffer sb = new StringBuffer();
+        sb.append("\n\n\n\n\n\n");
         if (template == null || template.trim().length() == 0) {
             sb.append("\nPlease use the -Dtemplate=<template> argument to specify a project template.\n");
         }
